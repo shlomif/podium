@@ -1,0 +1,148 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+use Carp::Always;
+use Getopt::Long;
+use File::Slurp;
+use Pod::Simple 3.13;
+use YAML qw( LoadFile );
+
+use Template ();
+use Template::Constants qw( :debug :chomp );
+
+my $podpath;
+my $buildpath;
+
+GetOptions(
+    'podpath:s'   => \$podpath,
+    'buildpath:s' => \$buildpath,
+) or exit;
+
+$podpath or die "Must specify --podpath\n";
+$buildpath or die "Must specify --buildpath\n";
+
+if ( ! -d $buildpath || ! -w $buildpath ) {
+    die "Buildpath ($buildpath) doesn't exist or is not writable";
+}
+
+my %defaults = (
+    INCLUDE_PATH => [ qw( tt ) ],
+    OUTPUT_PATH  => $buildpath,
+    DEBUG        => DEBUG_UNDEF,
+    TRIM         => CHOMP_ALL,
+    PRE_CHOMP    => 1,
+    POST_CHOMP   => 1,
+);
+
+my $tt = Template->new( \%defaults );
+my $vars = {};
+
+my @podfiles;
+my @sidelinks;
+
+for ( get_sections( $podpath ) ) {
+    my ($sectionfile, $sectiontext) = @{$_};
+
+    my $podfile  = "$podpath/$sectionfile.pod";
+    my $htmlfile = "$sectionfile.html";
+    push( @sidelinks, {
+        filename => $htmlfile,
+        text     => $sectiontext,
+    } );
+    push( @podfiles, {
+        section  => $sectiontext,
+        podfile  => $podfile,
+        htmlfile => $htmlfile,
+    } );
+}
+
+for my $vars ( @podfiles ) {
+    $vars->{content} = pod2html( $vars->{podfile} );
+    $vars->{sidelinks} = \@sidelinks;
+    $tt->process( 'page.ttml', $vars, $vars->{htmlfile} ) || die $tt->error;
+}
+
+sub get_sections {
+    my $sourcedir = shift;
+
+    opendir my $dh, $sourcedir or die "Can't open $sourcedir";
+    my %pod = map { ($_,1) } grep { /\.pod$/ && -f "$sourcedir/$_" } readdir $dh;
+
+    my $config = LoadFile( 'config.yaml' );
+    my @sections = @{$config->{pages}};
+    my @ordered_sections;
+    for my $section ( @sections ) {
+        my $filename = make_filename( $section );
+        delete $pod{"$filename.pod"} or die "$filename is in the section list but not in the source";
+        push( @ordered_sections, [ $filename, $section ] );
+    }
+    if ( keys %pod ) {
+        die "The following pod files still exist: ", join( ', ', sort keys %pod );
+    }
+
+    return @ordered_sections;
+}
+
+sub make_filename {
+    my $name = lc shift;
+
+    $name =~ s/[^-a-z]+/-/g;
+    $name =~ s/^-//;
+    $name =~ s/-$//;
+
+    return $name;
+}
+
+sub pod2html {
+    my $podfile = shift;
+
+    my $html;
+
+    my $parser = Pod::Simple::Perl101->new;
+    $parser->html_header_before_title( '' );
+    $parser->html_header_after_title( '' );
+    $parser->html_footer( '' );
+
+    # Manually adjust the stuff we passed thru earlier
+    my $podtext = read_file( $podfile );
+
+    $podtext =~ s{P<(.+?)>}{L<$1|http://perldoc.perl.org/$1.html>}g;
+    $podtext =~ s{M<(.+?)>}{L<$1|http://search.cpan.org/perldoc?$1>}g;
+
+    $parser->complain_stderr( 1 );
+    $parser->output_string( \$html );
+    $parser->parse_string_document( $podtext );
+
+
+    return $html;
+}
+
+# Subclassing Pod::Simple::HTML:
+# http://search.cpan.org/~arandal/Pod-Simple-3.05/lib/Pod/Simple/Subclassing.pod
+package Pod::Simple::Perl101;
+
+#use Pod::Simple::Debug(5);
+use base 'Pod::Simple::HTML';
+
+sub VERSION { '0.01' };
+
+sub new {
+    my $self = shift->SUPER::new(@_);
+
+    my @passthru = qw( P M ); # P = Perldoc, M = Module
+    $self->accept_codes( @passthru );
+
+    my $tagmap = $self->{Tagmap};
+
+    for my $code ( @passthru ) {
+        $tagmap->{$code} = "$code<";
+        $tagmap->{"/$code"} = ">";
+    }
+
+    $tagmap->{'VerbatimFormatted'} =
+        qq{\n<pre class="prettyprint lang-perl">\n};
+
+    return $self;
+}
