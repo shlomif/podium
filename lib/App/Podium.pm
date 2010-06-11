@@ -5,7 +5,7 @@ use strict;
 
 =head1 NAME
 
-App::Podium - The great new App::Podium!
+App::Podium - Helper functions for the podium app.
 
 =head1 VERSION
 
@@ -15,93 +15,39 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use App::Podium;
-
-    my $foo = App::Podium->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+Helper functions for podium.  No user-serviceable parts inside.
 
 =head1 FUNCTIONS
 
-=head2 function1
+=head2 pod2html
 
 =cut
 
-sub function1 {
+sub pod2html {
+    my $podfile = shift;
+
+    my $html;
+
+    my $parser = App::Podium::PSH->new;
+    $parser->html_header_before_title( '' );
+    $parser->html_header_after_title( '' );
+    $parser->html_footer( '' );
+
+    # Manually adjust the stuff we passed thru earlier
+    my $podtext = read_file( $podfile );
+
+    $podtext =~ s{P<(.+?)>}{L<$1|http://perldoc.perl.org/$1.html>}g;
+    $podtext =~ s{M<(.+?)>}{L<$1|http://search.cpan.org/perldoc?$1>}g;
+
+    $parser->complain_stderr( 1 );
+    $parser->output_string( \$html );
+    $parser->parse_string_document( $podtext );
+
+
+    return $html;
 }
 
-=head2 function2
-
-=cut
-
-sub function2 {
-}
-
-=head1 AUTHOR
-
-Andy Lester, C<< <andy at petdance.com> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-podium at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=podium>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc App::Podium
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=podium>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/podium>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/podium>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/podium/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2010 Andy Lester, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-
-=cut
 
 1; # End of App::Podium
