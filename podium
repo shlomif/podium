@@ -12,6 +12,8 @@ use YAML qw( LoadFile );
 use Template ();
 use Template::Constants qw( :debug :chomp );
 
+use App::Podium::PSH;
+
 my $podpath;
 my $buildpath;
 
@@ -100,7 +102,7 @@ sub pod2html {
 
     my $html;
 
-    my $parser = Pod::Simple::Perl101->new;
+    my $parser = App::Podium::PSH->new;
     $parser->html_header_before_title( '' );
     $parser->html_header_after_title( '' );
     $parser->html_footer( '' );
@@ -117,32 +119,4 @@ sub pod2html {
 
 
     return $html;
-}
-
-# Subclassing Pod::Simple::HTML:
-# http://search.cpan.org/~arandal/Pod-Simple-3.05/lib/Pod/Simple/Subclassing.pod
-package Pod::Simple::Perl101;
-
-#use Pod::Simple::Debug(5);
-use base 'Pod::Simple::HTML';
-
-sub VERSION { '0.01' };
-
-sub new {
-    my $self = shift->SUPER::new(@_);
-
-    my @passthru = qw( P M ); # P = Perldoc, M = Module
-    $self->accept_codes( @passthru );
-
-    my $tagmap = $self->{Tagmap};
-
-    for my $code ( @passthru ) {
-        $tagmap->{$code} = "$code<";
-        $tagmap->{"/$code"} = ">";
-    }
-
-    $tagmap->{'VerbatimFormatted'} =
-        qq{\n<pre class="prettyprint lang-perl">\n};
-
-    return $self;
 }

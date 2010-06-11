@@ -11,13 +11,14 @@ WriteMakefile(
     PL_FILES            => {},
     EXE_FILES           => [ 'podium' ],
     PREREQ_PM => {
-        'Carp::Always' => 0,
-        'File::Slurp'  => 0,
-        'Getopt::Long' => 0,
-        'Pod::Simple'  => 3.13,
-        'Template'     => 0,
-        'Test::More'   => 0,
-        'YAML'         => 0,
+        'Carp::Always'      => 0,
+        'File::Slurp'       => 0,
+        'Getopt::Long'      => 0,
+        'Pod::Simple'       => 3.13,
+        'Pod::Simple::HTML' => 0,
+        'Template'          => 0,
+        'Test::More'        => 0,
+        'YAML'              => 0,
     },
     META_MERGE => {
         resources => {
