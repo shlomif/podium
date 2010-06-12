@@ -6,9 +6,11 @@ use 5.10.0;
 
 Add --version
 
+Add --help
+
 Add "test" action
 
-Add "clean" action
+Allow it to run without templates.
 
 Let it copy over static stuff.
 

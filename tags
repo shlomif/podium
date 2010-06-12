@@ -7,11 +7,18 @@
 App::Podium	Podium.pm	/^package App::Podium;$/;"	p
 App::Podium::PSH	PSH.pm	/^package App::Podium::PSH;$/;"	p
 MY	Makefile.PL	/^sub MY::postamble {$/;"	s
+_mkpath	Podium.pm	/^sub _mkpath {$/;"	s
+build_tt_object	Podium.pm	/^sub build_tt_object {$/;"	s
+command_build	Podium.pm	/^sub command_build {$/;"	s
+command_clean	Podium.pm	/^sub command_clean {$/;"	s
+command_test	Podium.pm	/^sub command_test {$/;"	s
 critic	Makefile.PL	/^critic:$/;"	l
 dprof	Makefile.PL	/^dprof: all$/;"	l
 dproflb	Makefile.PL	/^dproflb: all$/;"	l
 fastprof	Makefile.PL	/^fastprof: all$/;"	l
+get_config	Podium.pm	/^sub get_config {$/;"	s
 get_pages	Podium.pm	/^sub get_pages {$/;"	s
+get_version_statement	Podium.pm	/^sub get_version_statement {$/;"	s
 make_filename	Podium.pm	/^sub make_filename {$/;"	s
 new	PSH.pm	/^sub new {$/;"	s
 nytprof	Makefile.PL	/^nytprof: all$/;"	l

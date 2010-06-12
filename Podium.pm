@@ -92,7 +92,10 @@ sub make_filename {
 sub get_config {
     my $configfile;
 
-    GetOptions( 'configfile:s' => \$configfile ) or exit;
+    GetOptions(
+        'configfile:s' => \$configfile,
+        version        => sub { print get_version_statement(); exit 1; },
+    ) or exit;
 
     if ( !$configfile ) {
         $configfile = 'config.yaml';
@@ -100,6 +103,30 @@ sub get_config {
     }
 
     my $config = LoadFile( $configfile );
+}
+
+=head2 get_version_statement
+
+Returns the version information for Podium.
+
+=cut
+
+sub get_version_statement {
+    require Config;
+
+    my $this_perl = $Config::Config{perlpath};
+    my $ver       = sprintf( '%vd', $^V );
+
+    return <<"END_OF_VERSION";
+podium $VERSION
+Running under Perl $ver at $this_perl
+
+Copyright 2010 Andy Lester.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of either: the GNU General Public License as
+published by the Free Software Foundation; or the Artistic License.
+END_OF_VERSION
 }
 
 
@@ -147,8 +174,6 @@ sub command_build {
     _mkpath( $config->{buildpath} );
 
     my $tt = App::Podium::build_tt_object( $config );
-
-    my $vars = {};
 
     my @podfiles;
     my @sidelinks;
