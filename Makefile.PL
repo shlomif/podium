@@ -1,3 +1,4 @@
+use 5.10.0;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
@@ -5,10 +6,14 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME                => 'App::Podium',
     AUTHOR              => 'Andy Lester <andy@petdance.com>',
-    VERSION_FROM        => 'lib/App/Podium.pm',
-    ABSTRACT_FROM       => 'lib/App/Podium.pm',
+    VERSION_FROM        => 'Podium.pm',
+    ABSTRACT_FROM       => 'Podium.pm',
     LICENSE             => 'perl',
     PL_FILES            => {},
+    PM                  => {
+        'Podium.pm' => '$(INST_LIBDIR)/Podium.pm',
+        'PSH.pm'    => '$(INST_LIBDIR)/Podium/PSH.pm',
+    },
     EXE_FILES           => [ 'podium' ],
     PREREQ_PM => {
         'Carp::Always'      => 0,

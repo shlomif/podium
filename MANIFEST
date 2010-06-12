@@ -2,7 +2,7 @@ Changes
 MANIFEST
 Makefile.PL
 README
-lib/App/Podium.pm
-lib/App/Podium/PSH.pm
+Podium.pm
+PSH.pm
 t/00-load.t
 t/pod.t

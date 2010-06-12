@@ -3,8 +3,9 @@ package App::Podium::PSH;
 # Subclassing Pod::Simple::HTML:
 # http://search.cpan.org/~arandal/Pod-Simple-3.05/lib/Pod/Simple/Subclassing.pod
 
-#use Pod::Simple::Debug(5);
 use base 'Pod::Simple::HTML';
+
+our $VERSION = '0.01';
 
 sub new {
     my $self = shift->SUPER::new(@_);

@@ -5,7 +5,7 @@ use strict;
 
 =head1 NAME
 
-App::Podium - Helper functions for the podium app.
+App::Podium - Helper functions for podium
 
 =head1 VERSION
 
@@ -14,6 +14,10 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
+
+use App::Podium::PSH;
+use File::Slurp;
+
 
 =head1 SYNOPSIS
 
@@ -47,6 +51,36 @@ sub pod2html {
 
 
     return $html;
+}
+
+sub get_pages {
+    my $sourcedir = shift;
+    my $pages     = shift;
+
+    opendir my $dh, $sourcedir or die "Can't open $sourcedir";
+    my %pod = map { ($_,1) } grep { /\.pod$/ && -f "$sourcedir/$_" } readdir $dh;
+
+    my @ordered_pages;
+    for my $section ( @{$pages} ) {
+        my $filename = make_filename( $section );
+        delete $pod{"$filename.pod"} or die "$filename is in the section list but not in the source";
+        push( @ordered_pages, [ $filename, $section ] );
+    }
+    if ( keys %pod ) {
+        die "The following pod files still exist: ", join( ', ', sort keys %pod );
+    }
+
+    return @ordered_pages;
+}
+
+sub make_filename {
+    my $name = lc shift;
+
+    $name =~ s/[^-a-z]+/-/g;
+    $name =~ s/^-//;
+    $name =~ s/-$//;
+
+    return $name;
 }
 
 
