@@ -18,9 +18,6 @@ use strict;
 use warnings;
 
 use Carp::Always;
-use Getopt::Long;
-use YAML qw( LoadFile );
-
 use App::Podium;
 
 MAIN: {

@@ -18,9 +18,12 @@ our $VERSION = '0.01';
 
 use App::Podium::PSH;
 use File::Slurp;
-
+use Getopt::Long;
+use YAML qw( LoadFile );
 use Template ();
 use Template::Constants qw( :debug :chomp );
+
+use ExtUtils::Command qw( rm_rf );
 
 =head1 SYNOPSIS
 
@@ -128,13 +131,20 @@ sub command_test {
 sub command_clean {
     my $config = shift;
 
-    say 'TODO: Make this do something';
+    local @ARGV = $config->{buildpath};
+    rm_rf;
 
     return;
 }
 
+sub _mkpath {
+    local @ARGV = @_;
+}
+
 sub command_build {
     my $config = shift;
+
+    _mkpath( $config->{buildpath} );
 
     my $tt = App::Podium::build_tt_object( $config );
 
