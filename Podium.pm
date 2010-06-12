@@ -1,5 +1,6 @@
 package App::Podium;
 
+use 5.10.0;
 use warnings;
 use strict;
 
@@ -18,6 +19,8 @@ our $VERSION = '0.01';
 use App::Podium::PSH;
 use File::Slurp;
 
+use Template ();
+use Template::Constants qw( :debug :chomp );
 
 =head1 SYNOPSIS
 
@@ -83,5 +86,87 @@ sub make_filename {
     return $name;
 }
 
+sub get_config {
+    my $configfile;
+
+    GetOptions( 'configfile:s' => \$configfile ) or exit;
+
+    if ( !$configfile ) {
+        $configfile = 'config.yaml';
+        say "Using $configfile";
+    }
+
+    my $config = LoadFile( $configfile );
+}
+
+
+sub build_tt_object {
+    my $config = shift;
+
+    my %defaults = (
+        INCLUDE_PATH => [ $config->{templatepath} ],
+        OUTPUT_PATH  => $config->{buildpath},
+        DEBUG        => DEBUG_UNDEF,
+        TRIM         => CHOMP_ALL,
+        PRE_CHOMP    => 1,
+        POST_CHOMP   => 1,
+    );
+
+    my $tt = Template->new( \%defaults );
+
+    return $tt;
+}
+
+sub command_test {
+    my $config = shift;
+
+    say 'TODO: Make this do something';
+
+    return;
+}
+
+sub command_clean {
+    my $config = shift;
+
+    say 'TODO: Make this do something';
+
+    return;
+}
+
+sub command_build {
+    my $config = shift;
+
+    my $tt = App::Podium::build_tt_object( $config );
+
+    my $vars = {};
+
+    my @podfiles;
+    my @sidelinks;
+
+    my $podpath = $config->{podpath};
+    for ( App::Podium::get_pages( $podpath, $config->{pages} ) ) {
+        my ($sectionfile, $sectiontext) = @{$_};
+
+        my $podfile  = "$podpath/$sectionfile.pod";
+        my $htmlfile = "$sectionfile.html";
+        push( @sidelinks, {
+                filename => $htmlfile,
+                text     => $sectiontext,
+            } );
+        push( @podfiles, {
+                section  => $sectiontext,
+                podfile  => $podfile,
+                htmlfile => $htmlfile,
+            } );
+    }
+
+    for my $vars ( @podfiles ) {
+        $vars->{content} = App::Podium::pod2html( $vars->{podfile} );
+        $vars->{sidelinks} = \@sidelinks;
+        $tt->process( 'page.ttml', $vars, $vars->{htmlfile} ) || die $tt->error;
+    }
+
+    return;
+}
 
 1; # End of App::Podium
