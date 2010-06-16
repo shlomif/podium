@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME                => 'App::Podium',
+    NAME                => 'podium',
+    ABSTRACT            => 'POD-based presentation and website builder',
     AUTHOR              => 'Andy Lester <andy@petdance.com>',
     VERSION_FROM        => 'Podium.pm',
-    ABSTRACT_FROM       => 'Podium.pm',
     LICENSE             => 'artistic2',
     PL_FILES            => {},
     PM                  => {
