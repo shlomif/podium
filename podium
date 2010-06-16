@@ -2,20 +2,6 @@
 
 use 5.10.0;
 
-=for TODO
-
-Add --version
-
-Add --help
-
-Add "test" action
-
-Allow it to run without templates.
-
-Let it copy over static stuff.
-
-=cut
-
 use strict;
 use warnings;
 
@@ -36,6 +22,37 @@ MAIN: {
     }
 }
 
+=head1 NAME
+
+podium - a POD-based presentation and website builder
+
+=head1 SYNOPSIS
+
+    podium --config=config.yaml clean
+    podium --config=config.yaml build
+
+=head1 DESCRIPTION
+
+Perl's POD format is great for building code-heavy presentations.
+So this takes the POD and builds presentations with it.
+
+=head1 TODO
+
+There's a lot to do.  I'm just putting this up to have something
+up.
+
+=over 4
+
+=item * Add --help
+
+=item * Add "test" action
+
+=item * Allow it to run without templates.
+
+=item * Let it copy over static stuff.
+
+=back
+
 =head1 AUTHOR
 
 Andy Lester, C<< <andy at petdance.com> >>
@@ -43,7 +60,7 @@ Andy Lester, C<< <andy at petdance.com> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to the issues list at
-Github: L<http://github.com/petdance/ack/issues>.  I will be notified,
+Github: L<http://github.com/petdance/podium/issues>.  I will be notified,
 and then you'll automatically be notified of progress on your bug
 as I make changes.
 
@@ -53,7 +70,7 @@ as I make changes.
 
 =item * Bugs
 
-L<http://github.com/petdance/ack/issues>
+L<http://github.com/petdance/podium/issues>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
@@ -75,19 +92,13 @@ I would love to populate this section.  Please send me your contributions.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2010 Andy Lester
+Copyright (C) 2010, Andy Lester,
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of either:
+This module is free software.  You can redistribute it and/or modify
+it under the terms of the Artistic License 2.0.
 
-=over 4
-
-=item * the GNU General Public License as published by the Free
-Software Foundation; either version 1, or (at your option) any later
-version, or
-
-=item * the Artistic License version 2.0.
-
-=back
+This program is distributed in the hope that it will be useful, but
+without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
 
 =cut
