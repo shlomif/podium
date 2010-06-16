@@ -8,7 +8,7 @@ WriteMakefile(
     AUTHOR              => 'Andy Lester <andy@petdance.com>',
     VERSION_FROM        => 'Podium.pm',
     ABSTRACT_FROM       => 'Podium.pm',
-    LICENSE             => 'perl',
+    LICENSE             => 'artistic2',
     PL_FILES            => {},
     PM                  => {
         'Podium.pm' => '$(INST_LIBDIR)/Podium.pm',
