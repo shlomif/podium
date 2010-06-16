@@ -1,8 +1,9 @@
 Changes
-MANIFEST
 Makefile.PL
-README
+MANIFEST
+podium
 Podium.pm
 PSH.pm
+README
 t/00-load.t
 t/pod.t
