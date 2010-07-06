@@ -50,6 +50,7 @@ sub pod2html_from_string {
     my $html;
 
     my $parser = App::Podium::PSH->new;
+    $parser->bare_output( 1 );
     $parser->html_header_before_title( '' );
     $parser->html_header_after_title( '' );
     $parser->html_footer( '' );
