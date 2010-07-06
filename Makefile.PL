@@ -11,8 +11,8 @@ WriteMakefile(
     LICENSE             => 'artistic2',
     PL_FILES            => {},
     PM                  => {
-        'Podium.pm' => '$(INST_LIBDIR)/Podium.pm',
-        'PSH.pm'    => '$(INST_LIBDIR)/Podium/PSH.pm',
+        'Podium.pm' => '$(INST_LIBDIR)/App/Podium.pm',
+        'PSH.pm'    => '$(INST_LIBDIR)/App/Podium/PSH.pm',
     },
     EXE_FILES           => [ 'podium' ],
     PREREQ_PM => {
