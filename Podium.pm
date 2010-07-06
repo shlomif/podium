@@ -64,6 +64,16 @@ sub pod2html_from_string {
     return $html;
 }
 
+
+sub pod2html_string {
+    my $podtext = shift;
+
+    $podtext =~ s{C<(.+?)>}{<tt>$1</tt>}g;
+
+    return $podtext;
+}
+
+
 sub get_pages {
     my $sourcedir = shift;
     my $pages     = shift;
@@ -202,11 +212,11 @@ sub command_build {
         my $htmlfile = "$sectionfile.html";
         push( @sidelinks, {
                 filename => $htmlfile,
-                #text     => App::Podium::pod2html_from_string( $sectiontext ),
-                text     => $sectiontext,
+                text     => App::Podium::pod2html_string( $sectiontext ),
             } );
+
         push( @podfiles, {
-                #section  => App::Podium::pod2html_from_string( $sectiontext ),
+                section  => App::Podium::pod2html_string( $sectiontext ),
                 section  => $sectiontext,
                 podfile  => $podfile,
                 htmlfile => $htmlfile,
