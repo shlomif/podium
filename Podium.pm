@@ -1,8 +1,6 @@
 package App::Podium;
 
-use 5.10.0;
-use warnings;
-use strict;
+use 5.012;
 
 =head1 NAME
 
@@ -50,7 +48,11 @@ sub pod2html_from_string {
     my $html;
 
     my $parser = App::Podium::PSH->new;
+    $parser->no_whining( 0 );
+    $parser->complain_stderr( 1 );
+    $parser->no_errata_section( 1 );
     $parser->bare_output( 1 );
+
     $parser->html_header_before_title( '' );
     $parser->html_header_after_title( '' );
     $parser->html_footer( '' );
@@ -69,6 +71,7 @@ sub pod2html_from_string {
 sub pod2html_string {
     my $podtext = shift;
 
+    # Cheap and sloppy
     $podtext =~ s{C<(.+?)>}{<tt>$1</tt>}g;
 
     return $podtext;

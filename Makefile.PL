@@ -1,6 +1,5 @@
-use 5.10.0;
-use strict;
-use warnings;
+use 5.012;
+
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
