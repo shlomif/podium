@@ -23,7 +23,7 @@ use YAML qw( LoadFile );
 use Template ();
 use Template::Constants qw( :debug :chomp );
 
-use ExtUtils::Command qw( rm_rf );
+use ExtUtils::Command qw( rm_rf mkpath );
 
 =head1 SYNOPSIS
 
@@ -35,8 +35,17 @@ Helper functions for podium.  No user-serviceable parts inside.
 
 =cut
 
-sub pod2html {
+sub pod2html_from_file {
     my $podfile = shift;
+
+    # Manually adjust the stuff we passed thru earlier
+    my $podtext = read_file( $podfile );
+
+    return pod2html_from_string( $podtext );
+}
+
+sub pod2html_from_string {
+    my $podtext = shift;
 
     my $html;
 
@@ -45,16 +54,12 @@ sub pod2html {
     $parser->html_header_after_title( '' );
     $parser->html_footer( '' );
 
-    # Manually adjust the stuff we passed thru earlier
-    my $podtext = read_file( $podfile );
-
     $podtext =~ s{P<(.+?)>}{L<$1|http://perldoc.perl.org/$1.html>}g;
     $podtext =~ s{M<(.+?)>}{L<$1|http://search.cpan.org/perldoc?$1>}g;
 
     $parser->complain_stderr( 1 );
     $parser->output_string( \$html );
     $parser->parse_string_document( $podtext );
-
 
     return $html;
 }
@@ -175,6 +180,8 @@ sub command_clean {
 
 sub _mkpath {
     local @ARGV = @_;
+
+    mkpath;
 }
 
 sub command_build {
@@ -195,9 +202,11 @@ sub command_build {
         my $htmlfile = "$sectionfile.html";
         push( @sidelinks, {
                 filename => $htmlfile,
+                #text     => App::Podium::pod2html_from_string( $sectiontext ),
                 text     => $sectiontext,
             } );
         push( @podfiles, {
+                #section  => App::Podium::pod2html_from_string( $sectiontext ),
                 section  => $sectiontext,
                 podfile  => $podfile,
                 htmlfile => $htmlfile,
@@ -205,7 +214,7 @@ sub command_build {
     }
 
     for my $vars ( @podfiles ) {
-        $vars->{content} = App::Podium::pod2html( $vars->{podfile} );
+        $vars->{content} = App::Podium::pod2html_from_file( $vars->{podfile} );
         $vars->{sidelinks} = \@sidelinks;
         $tt->process( 'page.ttml', $vars, $vars->{htmlfile} ) || die $tt->error;
     }
