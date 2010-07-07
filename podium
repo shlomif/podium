@@ -48,6 +48,12 @@ up.
 
 =item * Let it copy over static stuff.
 
+=item * Split each =head1 into its own sequential file.
+
+=item * Get rid of the intra-page links
+
+=item * Remove automatic filen
+
 =back
 
 =head1 AUTHOR
@@ -89,7 +95,7 @@ I would love to populate this section.  Please send me your contributions.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (C) 2010, Andy Lester,
+Copyright (C) 2010, Andy Lester
 
 This module is free software.  You can redistribute it and/or modify
 it under the terms of the Artistic License 2.0.
